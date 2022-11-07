@@ -4,15 +4,14 @@ public class MazeGenerator {
 	private int x;
 	private int y;
 	private int[][] maze;
-	private int[][] mazeFlags;
+	private boolean[][] visited;
 
 	public MazeGenerator(int x, int y) {
 		this.x = x;
 		this.y = y;
 		maze = new int[x][y];
-		mazeFlags = new int[x][y];
 		generateMaze(0, 0);
-
+		
 		// clears top left wall for entrance,
 		if(maze[0][0] == 4) 
 			{ maze[0][0] = 12; }
@@ -27,14 +26,30 @@ public class MazeGenerator {
 			{ maze[x-1][y-1] = 5; }
 		else
 			{ maze[x-1][y-1] = 13; }
-
+		
+		//visited = depthFirstSearch(maze);
 		System.out.println(Arrays.deepToString(maze));
+		System.out.println(Arrays.deepToString(visited));
+		for(int i = 1; i < 14; i++) {
+			int test1 = i & 1;
+			int test2 = i & 8;
+			/*
+			String binaryString = Integer.toBinaryString(i);
+			String binaryOne = Integer.toBinaryString(1);
+			String binaryEight = Integer.toBinaryString(8);
+			System.out.println(binaryString+"("+i+") & "+binaryOne+"(1) = "+test1);
+			System.out.println(binaryString+"("+i+") & "+binaryEight+"(8) = "+test2);
+*/
+		}
 	}
 
 	/* checks values of 2D array's ints in form of bits to help
 	visualize where maze walls are located. 
 	explained further in generation method down below */
 
+	/* for implementation later:
+	display will check given flag boolean 2darray returned from depthFirstSearch alongside maze 2darray and print dots for solutions within print method i.e. "# . " if maze[j][i] & 1 != 0 && flag[j][i] == true
+*/
 	public void display() {
 		for (int i = 0; i < y; i++) {
 			for (int j = 0; j < x; j++) {
@@ -42,7 +57,7 @@ public class MazeGenerator {
 					System.out.print("# # ");
 				}
 				else {
-					System.out.print("# . ");
+					System.out.print("#   ");
 				}
 			}
 			
@@ -50,10 +65,10 @@ public class MazeGenerator {
 			
 			for (int j = 0; j < x; j++) {
 				if((maze[j][i] & 8) == 0) {
-					System.out.print("# . ");
+					System.out.print("#   ");
 				}
 				else {
-					System.out.print("  . ");
+					System.out.print("    ");
 				}
 			}
 			
@@ -107,7 +122,7 @@ public class MazeGenerator {
 			}
 		}
 	}
-
+	
 	// helper method
 	private static boolean between(int v, int upper) {
 		return (v >= 0) && (v < upper);
@@ -146,3 +161,14 @@ public class MazeGenerator {
 	}
 	
 }
+
+/* 10 - west, south open (1010)
+	3 - north, south open (0011)
+	12 - west open, east open (1100)
+	5 - north open, east open (0101)
+
+1st digit - west
+2nd digit - east
+3rd digit - south
+4th digit - north
+	*/
